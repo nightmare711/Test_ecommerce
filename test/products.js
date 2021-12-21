@@ -44,19 +44,68 @@ describe('Orders', () => {
     })
 });
 
-describe('Products', () => {
-    describe('/GET all products', () => {
-        it('it should GET all orders', (done) => {
+// describe('Products', () => {
+//     describe('/GET all products', () => {
+//         it('it should GET all orders', (done) => {
+//             chai.request(server)
+//                 .get('/products')
+//                 .end((err, res) => {
+//                     res.should.have.status(200);
+//                     res.body.result.should.be.a('array');
+//                     expect(res.body.message).to.equal('successful')
+//                     // res.body.length.should.be.eql(9); // fixme :)
+//                     done();
+//                 });
+//         });
+//     })
+// })
+
+describe('Users', () => {
+    describe('Login users', () => {
+        it('it should login failed', (done) => {
+            let users = {
+                usersname: 'htran711',
+                password: 'KoOn711286'
+            }
             chai.request(server)
-                .get('/products')
+                .post('/users/login')
+                .send(users)
                 .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.result.should.be.a('array');
-                    expect(res.body.message).to.equal('successful')
-                    // res.body.length.should.be.eql(9); // fixme :)
+                    expect(res.body.status).to.be.eq(0)
+                    expect(res.body.message).to.be.eq("Invalid email or password")
+                    res.should.have.status(404);
                     done();
                 });
         });
     })
+    describe('Update user', () => {
+        it('it should update users successful', (done) => {
+            let users = {
+                firstName: 'TranH',
+                bio: 'i am a good boiz'
+            }
+            chai.request(server)
+                    .post('/users/update/61bce81a18d0f99c9d52ebfc')
+                    .send(users)
+                    .end((err, res) => {
+                        expect(res.body.status).to.be.eq(1)
+                        expect(res.body.message).to.be.eq("update successful")
+                        done();
+                    });
+        })
+        it('it should update failed', (done) => {
+            let users = {
+                firstName: 'TranH',
+                bio: 'i am a good boiz'
+            }
+            chai.request(server)
+                    .post('/users/update/61bce81a18d0f99c9dfc')
+                    .send(users)
+                    .end((err, res) => {
+                        expect(res.body.status).to.be.eq(0)
+                        // expect(res.body.message).to.be.eq("update successful")
+                        done();
+                    });
+        })
+    })
 })
-
